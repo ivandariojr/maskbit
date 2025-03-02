@@ -11,9 +11,9 @@ import torch
 
 from einops import rearrange
 
-from modeling.modules import BaseModel
-from modeling.taming.taming_autoencoder import Encoder, Decoder
-from modeling.quantizer import SimpleVectorizer as VectorQuantizer
+from maskbit.modeling.modules import BaseModel
+from maskbit.modeling.taming.taming_autoencoder import Encoder, Decoder
+from maskbit.modeling.quantizer import SimpleVectorizer as VectorQuantizer
 
 
 class OriginalVQModel(BaseModel):

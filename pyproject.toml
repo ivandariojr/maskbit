@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "maskbit"
+version = "0.0.1"
+description = "The Wav Tokenizer"
+authors = [
+    {name = "Albert Li", email = "alberthli@caltech.edu"},
+    {name = "Ivan Dario Jimenez Rodriguez", email = "ivan.jimenez@caltech.edu"},
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "MIT"
+urls = { "Original Repo" = 'https://github.com/jishengpeng/WavTokenizer'}
+dependencies = [
+    "huggingface-hub",
+    "matplotlib",
+    "wandb",
+    "webdataset",
+    "accelerate>=0.20.3",
+    "einops>=0.6.1",
+    "importlib-metadata==6.7.0",
+    "iopath",
+    "numpy",
+    "omegaconf>=2.3.0",
+    "packaging>=23.2",
+#    "Pillow==9.5.0", # installed at higher level with more lenient version
+#    "PyYAML==6.0.1",
+    "scipy",
+    "tabulate",
+    "torch-fidelity",
+    "torchinfo>=1.8.0",
+    "tqdm",
+    "webdataset>=0.2.57",
+    "zipp",
+    "termcolor",
+    "clean-fid",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["maskbit"]

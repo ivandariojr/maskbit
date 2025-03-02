@@ -14,10 +14,10 @@ import torch
 import torchvision
 from omegaconf import OmegaConf
 
-from utils.logger import setup_logger
-from modeling.conv_vqgan import ConvVQModel
-from modeling.taming_vqgan import OriginalVQModel
-from evaluator import TokenizerEvaluator
+from maskbit.utils.logger import setup_logger
+from maskbit.modeling.conv_vqgan import ConvVQModel
+from maskbit.modeling.taming_vqgan import OriginalVQModel
+from maskbit.evaluator import TokenizerEvaluator
 
 logger = setup_logger(name="MaskBit", log_level="INFO", use_accelerate=False)
 

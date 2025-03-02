@@ -12,7 +12,7 @@ import tqdm
 
 import webdataset as wds
 
-from data.imagenet_classes import IMAGENET2012_CLASSES
+from maskbit.data.imagenet_classes import IMAGENET2012_CLASSES
 
 
 parser = argparse.ArgumentParser("""Generate sharded dataset from original ImageNet data.""")

@@ -6,9 +6,9 @@ from typing import Mapping, Text, Tuple
 import torch
 from einops import rearrange
 
-from modeling.modules import (BaseModel, ConvDecoder, ConvDecoderLegacy,
+from maskbit.modeling.modules import (BaseModel, ConvDecoder, ConvDecoderLegacy,
                               ConvEncoder)
-from modeling.quantizer import LookupFreeQuantizer, SimpleVectorizer
+from maskbit.modeling.quantizer import LookupFreeQuantizer, SimpleVectorizer
 
 
 def choose_vector_quantizer_class(config):
@@ -24,11 +24,14 @@ def choose_vector_quantizer_class(config):
         )
     elif config.quantizer_type == "lookup-free":
         return LookupFreeQuantizer(
-            config.token_size,
-            config.commitment_cost,
-            config.entropy_loss_weight,
-            config.entropy_loss_temperature,
-            config.entropy_gamma,
+            strategy=config.strategy,
+            ent_strategy=config.ent_strategy,
+            token_bits=config.token_size,
+            commitment_cost=config.commitment_cost,
+            entropy_loss_weight=config.entropy_loss_weight,
+            entropy_loss_temperature=config.entropy_loss_temperature,
+            entropy_gamma=config.entropy_gamma,
+            allocate_codes=config.get("allocate_codes", True),
         )
     elif config.quantizer_type == "vae":
         return NotImplementedError("Currently not supported. We welcome a well tested PR.")

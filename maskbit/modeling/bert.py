@@ -10,7 +10,7 @@ from typing import List, Tuple, Union, Optional
 import torch
 from einops import rearrange
 
-from modeling.modules import BaseModel
+from maskbit.modeling.modules import BaseModel
 
 
 class BertFeedForward(torch.nn.Module):

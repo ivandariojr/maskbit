@@ -13,8 +13,8 @@ from scipy import linalg
 import torch
 import torch.nn.functional as F
 
-from metrics.inception import get_inception_model
-from modeling.modules import LPIPS
+from maskbit.metrics.inception import get_inception_model
+from maskbit.modeling.modules import LPIPS
 
 
 _IMAGENET_TRAIN_256_STATISTICS = 'train_imagenet256_stats.npz'

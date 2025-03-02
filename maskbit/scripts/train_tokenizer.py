@@ -13,18 +13,20 @@ from accelerate.utils import DistributedType, set_seed
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 
-from data import SimpleImagenet
+from maskbit.data import SimpleImagenet
 import torch
+import wandb
+from torch import nn
 from omegaconf import OmegaConf
 from torch.optim import AdamW
-from utils.lr_schedulers import get_scheduler
-from utils.logger import setup_logger
-from utils.meter import AverageMeter
-from modeling.modules import EMAModel, VQGANLoss
-from modeling.conv_vqgan import ConvVQModel
-from evaluator import TokenizerEvaluator
+from maskbit.utils.lr_schedulers import get_scheduler
+from maskbit.utils.logger import setup_logger
+from maskbit.utils.meter import AverageMeter
+from maskbit.modeling.modules import EMAModel, VQGANLoss
+from maskbit.modeling.conv_vqgan import ConvVQModel
+from maskbit.evaluator import TokenizerEvaluator
 
-from utils.viz_utils import make_viz_from_samples
+from maskbit.utils.viz_utils import make_viz_from_samples
 
 from torchinfo import summary
 
@@ -100,6 +102,10 @@ def main():
     logger.info("Creating model and optimizer")
 
     model = ConvVQModel(config.model.vq_model)
+
+    # Convert BatchNorm layers if using multiple processes
+    if accelerator.num_processes > 1:
+        model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
     # Create the EMA model
     if config.training.use_ema:
@@ -213,6 +219,11 @@ def main():
     preproc_config = config.dataset.preprocessing
     dataset_config = config.dataset.params
 
+    if hasattr(config.training, "val_per_gpu_batch_size"):
+        val_per_gpu_batch_size = config.training.val_per_gpu_batch_size
+    else:
+        val_per_gpu_batch_size = config.training.per_gpu_batch_size
+
     dataset = SimpleImagenet(
         train_shards_path=dataset_config.train_shards_path_or_url,
         eval_shards_path=dataset_config.eval_shards_path_or_url,
@@ -228,6 +239,7 @@ def main():
         use_random_crop=preproc_config.use_random_crop,
         min_scale=preproc_config.min_scale,
         interpolation=preproc_config.interpolation,
+        val_per_gpu_batch_size=val_per_gpu_batch_size,
     )
     train_dataloader, eval_dataloader = dataset.train_dataloader, dataset.eval_dataloader
 
@@ -635,6 +647,14 @@ def save_checkpoint(model, output_dir, accelerator, global_step) -> Path:
         logger.info(f"Saved state to {save_path}")
 
     accelerator.save_state(save_path)
+
+    # if using wandb, upload everything in the save_path
+    if accelerator.is_main_process and wandb.run is not None:
+        run_id = accelerator.get_tracker("wandb").run.id
+        artifact = wandb.Artifact(f"{run_id}", type="model")
+        artifact.add_dir(str(save_path))
+        wandb.log_artifact(artifact)
+
     return save_path
 
 

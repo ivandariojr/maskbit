@@ -102,6 +102,7 @@ class SimpleImagenet:
         use_random_crop: bool = True,
         min_scale: float = 0.05,
         interpolation: Text = "bilinear",
+        val_per_gpu_batch_size: int | None = None,
     ):
         """
         Initialize a WebDatasetReader for ImageNet.
@@ -121,7 +122,9 @@ class SimpleImagenet:
             use_random_crop -> bool: Whether to use random crop. Defaults to True.
             min_scale -> float: Minimum scale for random crop. Defaults to 0.05.
             interpolation -> Text: Interpolation method. Defaults to "bilinear".
+            val_per_gpu_batch_size -> int: Batch size per GPU for validation.
         """
+        val_per_gpu_batch_size = val_per_gpu_batch_size or per_gpu_batch_size
         transform = ImageNetTransform(
             resolution,
             use_aspect_ratio_aug=use_aspect_ratio_aug,
@@ -196,7 +199,7 @@ class SimpleImagenet:
             wds.split_by_worker,
             wds.tarfile_to_samples(handler=wds.ignore_and_continue),
             *test_processing_pipeline,
-            wds.batched(per_gpu_batch_size, partial=True, collation_fn=default_collate),
+            wds.batched(val_per_gpu_batch_size, partial=True, collation_fn=default_collate),
         ]
         self._eval_dataset = wds.DataPipeline(*pipeline)
         self._eval_dataloader = wds.WebLoader(

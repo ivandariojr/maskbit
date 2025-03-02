@@ -3,7 +3,7 @@
 import torch
 import torch.nn.functional as F
 
-from modeling.modules import OriginalNLayerDiscriminator,  NLayerDiscriminatorv2
+from maskbit.modeling.modules import OriginalNLayerDiscriminator,  NLayerDiscriminatorv2
 
 
 def toggle_off_gradients(model: torch.nn.Module):

@@ -6,7 +6,7 @@ from typing import Tuple
 import torch
 import torch.nn.functional as F
 
-from modeling.modules.autoencoder import Conv2dSame
+from maskbit.modeling.modules.autoencoder import Conv2dSame
 
 
 class BlurBlock(torch.nn.Module):

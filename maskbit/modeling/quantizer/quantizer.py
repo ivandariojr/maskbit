@@ -4,7 +4,7 @@ from typing import Mapping, Text, Tuple
 import torch
 from einops import rearrange
 
-from modeling.quantizer.quantizer_utils import entropy_loss_fn
+from maskbit.modeling.quantizer.quantizer_utils import entropy_loss_fn
 
 
 class SimpleVectorizer(torch.nn.Module):

@@ -13,7 +13,6 @@ Pillow==9.5.0
 PyYAML==6.0.1
 scipy
 tabulate
-tensorboardX
 torch-fidelity
 torchinfo>=1.8.0
 tqdm
@@ -21,4 +20,3 @@ webdataset>=0.2.57
 zipp
 termcolor
 clean-fid
-tensorflow
